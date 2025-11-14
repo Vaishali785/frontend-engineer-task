@@ -15,11 +15,25 @@ export interface projectListing {
   slug: string
   image: string
   isWishlisted?: boolean
-  type: "apartment" | "villa" | "plot"
+  type: "Apartment" | "Villa" | "Plot" | "Row House"
   projectStatus: string
   alt: string
   latitude: number
   longitude: number
+  developerId: number
+  developerName: string
+  landArea: number
+  popularity: string
+}
+
+export type PropertyListingType = { 
+    projects: projectListing[];
+    developers?: [],
+    micromarkets?: [],
+    currentPage?: number,
+    eoiProjects?: [],
+    totalPages?: number,
+    totalProjects?: number,
 }
 
 export interface LocationType {
