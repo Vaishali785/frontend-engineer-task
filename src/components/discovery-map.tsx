@@ -5,8 +5,9 @@
 
 import "leaflet/dist/leaflet.css";
 
-// TODO : This import gives "window is not defined" error in the terminal. Fix it.
-import "leaflet-defaulticon-compatibility";
+// TODO (done) : This import gives "window is not defined" error in the terminal. Fix it.
+// Added this import inside useEffect 
+// import "leaflet-defaulticon-compatibility";
 
 
 // TODO : Clicking a marker should ideally open the popup with the selected property details. Currently not implemented. Implement it.
@@ -14,6 +15,8 @@ import "leaflet-defaulticon-compatibility";
 import { JSX, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+// "window is not defined" error comes here too
+// Fix: Created new component called discovery-map-wrapper.tsx 
 import {
   LayersControl,
   MapContainer,
@@ -37,10 +40,9 @@ import { HouseIcon } from "@/assets/house-icon";
 import { LocationIcon } from "@/assets/location-icon";
 import { CalendarIcon } from "@/assets/utility";
 import L, { Map as LeafletMap, Marker as LeafletMarker } from "leaflet";
-import { LocationType, projectListing } from "@/types/types";
+import { LocationType, projectListing, PropertyListingType } from "@/types/types";
 import { Badge } from "./badge";
 import { renderToString } from "react-dom/server";
-import dynamic from "next/dynamic";
 
 interface Location {
   lat: number;
@@ -101,7 +103,7 @@ function MapController({
 
 export default function DiscoveryMap({
   allFilteredData,
-}: Readonly<{ allFilteredData: any }>) {
+}: Readonly<{ allFilteredData: PropertyListingType }>) {
   const [selectedLocation, setSelectedLocation] = useState<LocationType | null>(
     null
   );
@@ -109,12 +111,20 @@ export default function DiscoveryMap({
   const [selectedProperty, setSelectedProperty] =
     useState<projectListing | null>(null);
 
+  // Import leaflet-defaulticon-compatibility only on client side to avoid "window is not defined" error
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // @ts-expect-error - leaflet-defaulticon-compatibility doesn't have type definitions
+      import("leaflet-defaulticon-compatibility");
+    }
+  }, []);
+
   useEffect(() => {
     if (selectedLocation) {
       const found = allFilteredData.projects.find(
         (prop: projectListing) => prop.name == selectedLocation.name
       );
-      setSelectedProperty(found);
+      setSelectedProperty(found ?? null);
       const el = document.querySelector(
         `[data-marker-id="${selectedLocation.name}"]`
       ) as HTMLElement | null;

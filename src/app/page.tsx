@@ -1,5 +1,6 @@
-import DiscoveryMap from "@/components/discovery-map";
+import DiscoveryMapWrapper from "@/components/discovery-map-wrapper";
 import { PropertyListing } from "@/data/property-listing";
+import { PropertyListingType } from "@/types/types";
 
 //TODO : Add meta data for this page
 // Page should serve via SSR
@@ -14,7 +15,7 @@ import { PropertyListing } from "@/data/property-listing";
 export default async function Page() {
   return (
     <div className="w-screen h-screen">
-      <DiscoveryMap allFilteredData={PropertyListing} />
+      <DiscoveryMapWrapper allFilteredData={PropertyListing as PropertyListingType} />
     </div>
   );
 }
