@@ -10,7 +10,7 @@ import "leaflet/dist/leaflet.css";
 // import "leaflet-defaulticon-compatibility";
 
 
-// TODO : Clicking a marker should ideally open the popup with the selected property details. Currently not implemented. Implement it.
+// TODO (done) : Clicking a marker should ideally open the popup with the selected property details. Currently not implemented. Implement it.
 
 import { JSX, useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -183,120 +183,120 @@ export default function DiscoveryMap({
                     project.name,
                     selectedProperty?.id == project.id
                   )}
-                />
+                >
+                    <Popup
+                        position={[project.latitude, project.longitude]}
+                        autoClose={true}
+                        closeOnClick={false}
+                        offset={[0, -20]}
+                        closeOnEscapeKey
+                        minWidth={400}
+                        closeButton
+                    >
+                    <Link
+                        href={`/property-for-sale-in/${project.city.toLowerCase()}/${project.slug.toLowerCase()}/${
+                        project.id
+                        }`}
+                        target="_blank"
+                    >
+                        <div className="flex w-full flex-col gap-3">
+                        <Image
+                            src={project.image}
+                            alt={project.alt}
+                            width={500}
+                            height={500}
+                            loading="lazy"
+                            className={cn(
+                            "aspect-video size-full rounded-lg object-cover transition-all duration-400 ease-in-out",
+                            project.projectStatus === "soldOut" &&
+                                "grayscale"
+                            )}
+                        />
+                        <h3
+                            className={cn(
+                            para({ size: "lg", color: "dark" }),
+                            "font-semibold"
+                            )}
+                        >
+                            {project.name}
+                        </h3>
+
+                        <div className="flex flex-col gap-3 whitespace-nowrap">
+                            <div className="flex w-full items-center justify-between">
+                            <span
+                                className={cn(
+                                para({ color: "dark", size: "sm" }),
+                                "flex w-full items-center gap-2"
+                                )}
+                            >
+                                <LocationIcon width={20} height={20} />
+                                <span>{project.micromarket}</span>
+                            </span>
+                            <span
+                                className={cn(
+                                para({ color: "dark", size: "sm" }),
+                                "flex w-full items-center justify-end gap-2"
+                                )}
+                            >
+                                <PropscoreRating
+                                rating={project.propscore}
+                                width={110}
+                                height={24}
+                                className={"ml-auto w-max max-w-40"}
+                                />
+                            </span>
+                            </div>
+                            <div className="flex w-full items-center justify-between gap-3">
+                            <span
+                                className={cn(
+                                para({ color: "dark", size: "sm" }),
+                                "flex w-full max-w-40 items-center gap-2 truncate"
+                                )}
+                            >
+                                <BudgetIcon width={20} height={20} />
+                                {formatPrice(project.minPrice, false)} -{" "}
+                                {formatPrice(project.maxPrice, false)}
+                            </span>
+                            <span
+                                className={cn(
+                                para({ color: "dark", size: "sm" }),
+                                "flex w-full items-center justify-end gap-2"
+                                )}
+                            >
+                                <CalendarIcon height={20} width={20} />
+                                {formatDate(project.possessionDate)}
+                            </span>
+                            </div>
+                            <div className="flex w-full items-center justify-between gap-3">
+                            <span
+                                className={cn(
+                                para({ color: "dark", size: "sm" }),
+                                "flex w-full max-w-40 items-center gap-2 truncate"
+                                )}
+                            >
+                                <HouseIcon width={20} height={20} />
+                                <span className="w-32 max-w-32 truncate">
+                                {concatenateTypologies(project.typologies)}
+                                </span>
+                            </span>
+                            <span
+                                className={cn(
+                                para({ color: "dark", size: "sm" }),
+                                "flex w-full items-center justify-end gap-2"
+                                )}
+                            >
+                                {project.minSaleableArea} -{" "}
+                                {project.maxSaleableArea} sqft
+                            </span>
+                            </div>
+                        </div>
+                        </div>
+                    </Link>
+                    </Popup>
+                </Marker>
               ))
             : null}
-          {selectedLocation && selectedProperty && (
-            <Popup
-              position={[selectedLocation.lat, selectedLocation.lon]}
-              autoClose={false}
-              closeOnClick={false}
-              offset={[0, -20]}
-              closeOnEscapeKey
-              minWidth={400}
-              closeButton
-            >
-              <Link
-                href={`/property-for-sale-in/${selectedProperty.city.toLowerCase()}/${selectedProperty.slug.toLowerCase()}/${
-                  selectedProperty.id
-                }`}
-                target="_blank"
-              >
-                <div className="flex w-full flex-col gap-3">
-                  <Image
-                    src={selectedProperty.image}
-                    alt={selectedProperty.alt}
-                    width={500}
-                    height={500}
-                    loading="lazy"
-                    className={cn(
-                      "aspect-video size-full rounded-lg object-cover transition-all duration-400 ease-in-out",
-                      selectedProperty.projectStatus === "soldOut" &&
-                        "grayscale"
-                    )}
-                  />
-                  <h3
-                    className={cn(
-                      para({ size: "lg", color: "dark" }),
-                      "font-semibold"
-                    )}
-                  >
-                    {selectedProperty.name}
-                  </h3>
-
-                  <div className="flex flex-col gap-3 whitespace-nowrap">
-                    <div className="flex w-full items-center justify-between">
-                      <span
-                        className={cn(
-                          para({ color: "dark", size: "sm" }),
-                          "flex w-full items-center gap-2"
-                        )}
-                      >
-                        <LocationIcon width={20} height={20} />
-                        <span>{selectedProperty.micromarket}</span>
-                      </span>
-                      <span
-                        className={cn(
-                          para({ color: "dark", size: "sm" }),
-                          "flex w-full items-center justify-end gap-2"
-                        )}
-                      >
-                        <PropscoreRating
-                          rating={selectedProperty.propscore}
-                          width={110}
-                          height={24}
-                          className={"ml-auto w-max max-w-40"}
-                        />
-                      </span>
-                    </div>
-                    <div className="flex w-full items-center justify-between gap-3">
-                      <span
-                        className={cn(
-                          para({ color: "dark", size: "sm" }),
-                          "flex w-full max-w-40 items-center gap-2 truncate"
-                        )}
-                      >
-                        <BudgetIcon width={20} height={20} />
-                        {formatPrice(selectedProperty.minPrice, false)} -{" "}
-                        {formatPrice(selectedProperty.maxPrice, false)}
-                      </span>
-                      <span
-                        className={cn(
-                          para({ color: "dark", size: "sm" }),
-                          "flex w-full items-center justify-end gap-2"
-                        )}
-                      >
-                        <CalendarIcon height={20} width={20} />
-                        {formatDate(selectedProperty.possessionDate)}
-                      </span>
-                    </div>
-                    <div className="flex w-full items-center justify-between gap-3">
-                      <span
-                        className={cn(
-                          para({ color: "dark", size: "sm" }),
-                          "flex w-full max-w-40 items-center gap-2 truncate"
-                        )}
-                      >
-                        <HouseIcon width={20} height={20} />
-                        <span className="w-32 max-w-32 truncate">
-                          {concatenateTypologies(selectedProperty.typologies)}
-                        </span>
-                      </span>
-                      <span
-                        className={cn(
-                          para({ color: "dark", size: "sm" }),
-                          "flex w-full items-center justify-end gap-2"
-                        )}
-                      >
-                        {selectedProperty.minSaleableArea} -{" "}
-                        {selectedProperty.maxSaleableArea} sqft
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </Popup>
-          )}
+          
         </MapContainer>
       </div>
     </section>
