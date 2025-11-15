@@ -183,12 +183,13 @@ export default function DiscoveryMap({
                     project.name,
                     selectedProperty?.id == project.id
                   )}
+                  eventHandlers={{click: ()=> setSelectedProperty(prev=>  prev?.latitude === project.latitude ? null : project)}} //set selected property for popup details
                 />
               ))
             : null}
-          {selectedLocation && selectedProperty && (
+          {selectedProperty && ( // I didn't understand what is selectedLocation and how to use it, so I removed that check
             <Popup
-              position={[selectedLocation.lat, selectedLocation.lon]}
+              position={[selectedProperty.latitude, selectedProperty.longitude]}
               autoClose={false}
               closeOnClick={false}
               offset={[0, -20]}
