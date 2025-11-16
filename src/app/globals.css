@@ -24,3 +24,13 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.custom-marker-cluster {
+    background: black !important;
+    border-radius: 50%;
+    color: white;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+  }
