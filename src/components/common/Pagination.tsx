@@ -22,7 +22,6 @@ function Pagination({rowCount, pageNum, setPageNum,totalCount}: Props) {
         setInputValue(pageNum.toString());
     }, [pageNum]);
 
-    console.log(">>page",pageNum, inputValue, currentPage)
     const handlePageNumUpdate = (newPage:number) => {
         const page = Math.min(Math.max(newPage, 1), totalPageCount);
         const params = new URLSearchParams(searchParams.toString());
