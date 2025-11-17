@@ -595,3 +595,27 @@ export const YoutubeIcon: React.FC<IconSvgProps> = ({
     />
   </svg>
 )
+
+
+export const ShortlistIcon: React.FC<IconSvgProps> = ({
+    size = 12,
+    width,
+    height,
+    color = "#FFFFFF",
+    ...props
+}) => (
+    <svg  width={size || width}
+        height={size || height} 
+        viewBox="0 0 18 18" fill="none"
+        xmlns="http://www.w3.org/2000/svg" 
+        data-sentry-element="svg" 
+        data-sentry-source-file="shortlist-icon.tsx" 
+        data-sentry-component="ShortlistIcon"
+        {...props}
+        >
+            <path d="M9.465 15.6075C9.21 15.6975 8.79 15.6975 8.535 15.6075C6.36 14.865 1.5 11.7675 1.5 6.51745C1.5 4.19995 3.3675 2.32495 5.67 2.32495C7.035 2.32495 8.2425 2.98495 9 4.00495C9.7575 2.98495 10.9725 2.32495 12.33 2.32495C14.6325 2.32495 16.5 4.19995 16.5 6.51745C16.5 11.7675 11.64 14.865 9.465 15.6075Z" 
+            stroke={color}
+            strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" data-sentry-element="path" data-sentry-source-file="shortlist-icon.tsx">
+            </path>
+    </svg>
+)
