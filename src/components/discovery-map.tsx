@@ -1,6 +1,6 @@
 "use client";
 
-// TODO:  When zooming out, property nodes overlap and become cluttered.
+// TODO (done):  When zooming out, property nodes overlap and become cluttered.
 // Improve visual spacing for a better UI/UX.
 
 import "leaflet/dist/leaflet.css";
@@ -28,6 +28,8 @@ import {
 } from "react-leaflet";
 
 import { PropscoreRating } from "@/assets/PropsochRating";
+import "leaflet.markercluster"; //for cluster type
+
 import {
   cn,
   concatenateTypologies,
@@ -43,6 +45,7 @@ import L, { Map as LeafletMap, Marker as LeafletMarker } from "leaflet";
 import { LocationType, projectListing, PropertyListingType } from "@/types/types";
 import { Badge } from "./badge";
 import { renderToString } from "react-dom/server";
+import MarkerClusterGroup from "react-leaflet-cluster"; //to create marker cluster
 
 interface Location {
   lat: number;
@@ -174,128 +177,138 @@ export default function DiscoveryMap({
 
           {/* Project Location Marker */}
 
-          {allFilteredData && allFilteredData.projects.length > 0
-            ? allFilteredData.projects.map((project: projectListing) => (
-                <Marker
-                  position={[project.latitude, project.longitude]}
-                  key={project.id}
-                  icon={getOtherLocationIcon(
-                    project.name,
-                    selectedProperty?.id == project.id
-                  )}
-                >
-                    <Popup
+            <MarkerClusterGroup 
+                iconCreateFunction={(cluster : L.MarkerCluster) => {
+                    return L.divIcon({
+                    html: `<span class="cluster-icon">${cluster.getChildCount()}</span>`,
+                    className: "custom-marker-cluster",
+                    iconSize: L.point(40, 40, true),
+                    });
+                }}
+            >
+                {allFilteredData && allFilteredData.projects.length > 0
+                    ? allFilteredData.projects.map((project: projectListing) => (
+                        <Marker
                         position={[project.latitude, project.longitude]}
-                        autoClose={true}
-                        closeOnClick={false}
-                        offset={[0, -20]}
-                        closeOnEscapeKey
-                        minWidth={400}
-                        closeButton
-                    >
-                    <Link
-                        href={`/property-for-sale-in/${project.city.toLowerCase()}/${project.slug.toLowerCase()}/${
-                        project.id
-                        }`}
-                        target="_blank"
-                    >
-                        <div className="flex w-full flex-col gap-3">
-                        <Image
-                            src={project.image}
-                            alt={project.alt}
-                            width={500}
-                            height={500}
-                            loading="lazy"
-                            className={cn(
-                            "aspect-video size-full rounded-lg object-cover transition-all duration-400 ease-in-out",
-                            project.projectStatus === "soldOut" &&
-                                "grayscale"
-                            )}
-                        />
-                        <h3
-                            className={cn(
-                            para({ size: "lg", color: "dark" }),
-                            "font-semibold"
-                            )}
+                        key={project.id}
+                        icon={getOtherLocationIcon(
+                            project.name,
+                            selectedProperty?.id == project.id
+                        )}
                         >
-                            {project.name}
-                        </h3>
-
-                        <div className="flex flex-col gap-3 whitespace-nowrap">
-                            <div className="flex w-full items-center justify-between">
-                            <span
-                                className={cn(
-                                para({ color: "dark", size: "sm" }),
-                                "flex w-full items-center gap-2"
-                                )}
+                            <Popup
+                                position={[project.latitude, project.longitude]}
+                                autoClose={true}
+                                closeOnClick={false}
+                                offset={[0, -20]}
+                                closeOnEscapeKey
+                                minWidth={400}
+                                closeButton
                             >
-                                <LocationIcon width={20} height={20} />
-                                <span>{project.micromarket}</span>
-                            </span>
-                            <span
-                                className={cn(
-                                para({ color: "dark", size: "sm" }),
-                                "flex w-full items-center justify-end gap-2"
-                                )}
+                            <Link
+                                href={`/property-for-sale-in/${project.city.toLowerCase()}/${project.slug.toLowerCase()}/${
+                                project.id
+                                }`}
+                                target="_blank"
                             >
-                                <PropscoreRating
-                                rating={project.propscore}
-                                width={110}
-                                height={24}
-                                className={"ml-auto w-max max-w-40"}
+                                <div className="flex w-full flex-col gap-3">
+                                <Image
+                                    src={project.image}
+                                    alt={project.alt}
+                                    width={500}
+                                    height={500}
+                                    loading="lazy"
+                                    className={cn(
+                                    "aspect-video size-full rounded-lg object-cover transition-all duration-400 ease-in-out",
+                                    project.projectStatus === "soldOut" &&
+                                        "grayscale"
+                                    )}
                                 />
-                            </span>
-                            </div>
-                            <div className="flex w-full items-center justify-between gap-3">
-                            <span
-                                className={cn(
-                                para({ color: "dark", size: "sm" }),
-                                "flex w-full max-w-40 items-center gap-2 truncate"
-                                )}
-                            >
-                                <BudgetIcon width={20} height={20} />
-                                {formatPrice(project.minPrice, false)} -{" "}
-                                {formatPrice(project.maxPrice, false)}
-                            </span>
-                            <span
-                                className={cn(
-                                para({ color: "dark", size: "sm" }),
-                                "flex w-full items-center justify-end gap-2"
-                                )}
-                            >
-                                <CalendarIcon height={20} width={20} />
-                                {formatDate(project.possessionDate)}
-                            </span>
-                            </div>
-                            <div className="flex w-full items-center justify-between gap-3">
-                            <span
-                                className={cn(
-                                para({ color: "dark", size: "sm" }),
-                                "flex w-full max-w-40 items-center gap-2 truncate"
-                                )}
-                            >
-                                <HouseIcon width={20} height={20} />
-                                <span className="w-32 max-w-32 truncate">
-                                {concatenateTypologies(project.typologies)}
-                                </span>
-                            </span>
-                            <span
-                                className={cn(
-                                para({ color: "dark", size: "sm" }),
-                                "flex w-full items-center justify-end gap-2"
-                                )}
-                            >
-                                {project.minSaleableArea} -{" "}
-                                {project.maxSaleableArea} sqft
-                            </span>
-                            </div>
-                        </div>
-                        </div>
-                    </Link>
-                    </Popup>
-                </Marker>
-              ))
-            : null}
+                                <h3
+                                    className={cn(
+                                    para({ size: "lg", color: "dark" }),
+                                    "font-semibold"
+                                    )}
+                                >
+                                    {project.name}
+                                </h3>
+
+                                <div className="flex flex-col gap-3 whitespace-nowrap">
+                                    <div className="flex w-full items-center justify-between">
+                                    <span
+                                        className={cn(
+                                        para({ color: "dark", size: "sm" }),
+                                        "flex w-full items-center gap-2"
+                                        )}
+                                    >
+                                        <LocationIcon width={20} height={20} />
+                                        <span>{project.micromarket}</span>
+                                    </span>
+                                    <span
+                                        className={cn(
+                                        para({ color: "dark", size: "sm" }),
+                                        "flex w-full items-center justify-end gap-2"
+                                        )}
+                                    >
+                                        <PropscoreRating
+                                        rating={project.propscore}
+                                        width={110}
+                                        height={24}
+                                        className={"ml-auto w-max max-w-40"}
+                                        />
+                                    </span>
+                                    </div>
+                                    <div className="flex w-full items-center justify-between gap-3">
+                                    <span
+                                        className={cn(
+                                        para({ color: "dark", size: "sm" }),
+                                        "flex w-full max-w-40 items-center gap-2 truncate"
+                                        )}
+                                    >
+                                        <BudgetIcon width={20} height={20} />
+                                        {formatPrice(project.minPrice, false)} -{" "}
+                                        {formatPrice(project.maxPrice, false)}
+                                    </span>
+                                    <span
+                                        className={cn(
+                                        para({ color: "dark", size: "sm" }),
+                                        "flex w-full items-center justify-end gap-2"
+                                        )}
+                                    >
+                                        <CalendarIcon height={20} width={20} />
+                                        {formatDate(project.possessionDate)}
+                                    </span>
+                                    </div>
+                                    <div className="flex w-full items-center justify-between gap-3">
+                                    <span
+                                        className={cn(
+                                        para({ color: "dark", size: "sm" }),
+                                        "flex w-full max-w-40 items-center gap-2 truncate"
+                                        )}
+                                    >
+                                        <HouseIcon width={20} height={20} />
+                                        <span className="w-32 max-w-32 truncate">
+                                        {concatenateTypologies(project.typologies)}
+                                        </span>
+                                    </span>
+                                    <span
+                                        className={cn(
+                                        para({ color: "dark", size: "sm" }),
+                                        "flex w-full items-center justify-end gap-2"
+                                        )}
+                                    >
+                                        {project.minSaleableArea} -{" "}
+                                        {project.maxSaleableArea} sqft
+                                    </span>
+                                    </div>
+                                </div>
+                                </div>
+                            </Link>
+                            </Popup>
+                        </Marker>
+                    ))
+                    : null}
+            </MarkerClusterGroup>
           
         </MapContainer>
       </div>
