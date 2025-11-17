@@ -6,7 +6,7 @@ import { PropertyListingType } from "@/types/types";
 // Page should serve via SSR
 // Do not add "use client" declarative
 
-// TODO: Create a List view for these properties.
+// TODO (done): Create a List view for these properties.
 // Use your own imagination while designing, please don't copy Propsoch's current UI.
 // We don't like it either.
 // Add pagination
