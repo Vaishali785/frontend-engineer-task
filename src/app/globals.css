@@ -3,6 +3,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #FF6D33;
+  --normal: #66677E;
+  --accent: #f2f3f7;
 }
 
 @theme inline {
@@ -10,6 +13,10 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-normal: var(--normal);
+  --color-accent: var(--accent);
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,11 +27,26 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  /* background: var(--background); */
+  color: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
 
+
+p{
+    color: var(--normal);
+}
+/* Hide arrows in Chrome, Safari, Edge */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide arrows in Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
 .custom-marker-cluster {
     background: black !important;
     border-radius: 50%;
